@@ -109,10 +109,16 @@
 				if( structKeyExists( struct2, key )){
 
 					thisPath = thisPath & "[ ""#key#"" ]";
-					struct1Value = struct1[key];
+					struct1Value = StructKeyExists(struct1, key) ? struct1[key] : JavaCast("null", "");
 					struct2Value = struct2[key];
-
-					if( isSimpleValue( struct1Value ) AND isSimpleValue( struct2Value ) ){
+					if ( IsNull(struct1Value) ) {
+						mismatches.success = false;
+						mismatches.mismatches[thisPath] = structNew();
+						mismatches.mismatches[thisPath].Struct1Value = "UNDEFINED";
+						mismatches.mismatches[thisPath].Struct2Value = struct2Value;
+						mismatches.Struct1MismatchValues = listAppend( mismatches.Struct1MismatchValues, "Structure path #thisPath#: UNDEFINED", "#chr(10)#" );
+						mismatches.Struct2MismatchValues = listAppend( mismatches.Struct2MismatchValues, "Structure path #thisPath#: #struct2Value#", "#chr(10)#" );
+					} else if( isSimpleValue( struct1Value ) AND isSimpleValue( struct2Value ) ){
 						if( struct1Value neq struct2Value ){
 							mismatches.success = false;
 							mismatches.mismatches[thisPath] = structNew();
