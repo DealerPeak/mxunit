@@ -154,8 +154,8 @@
 					} else {
 						mismatches.message = "Not sure how to compare these datatypes at path #thisPath#. File a bug with a patch. ";
 						mismatches.success = false;
-						mismatches.Struct1MismatchValues = listAppend( mismatches.Struct1MismatchValues, "Structure path #thisPath#: CANNOT COMPARE", "#chr(10)#" );
-						mismatches.Struct2MismatchValues = listAppend( mismatches.Struct2MismatchValues, "Structure path #thisPath#: CANNOT COMPARE", "#chr(10)#" );
+						mismatches.Struct1MismatchValues = listAppend( mismatches.Struct1MismatchValues, "Structure path #thisPath#: CANNOT COMPARE TO STRUCT 2", "#chr(10)#" );
+						mismatches.Struct2MismatchValues = listAppend( mismatches.Struct2MismatchValues, "Structure path #thisPath#: CANNOT COMPARE TO STRUCT 1", "#chr(10)#" );
 					}
 
 					thisPath = arguments.path;
@@ -227,6 +227,8 @@
 				} else {
 					mismatches.message = "Not sure how to compare these datatypes at row #row#. File a bug with a patch. ";
 					mismatches.success = false;
+					mismatches.Array1MismatchValues = listAppend( mismatches.Array1MismatchValues, "row #row#: CANNOT COMPARE TO ARRAY 2", "#chr(10)#" );
+					mismatches.Array2MismatchValues = listAppend( mismatches.Array2MismatchValues, "row #row#: CANNOT COMPARE TO ARRAY 1", "#chr(10)#" );
 				}
 
 			}

@@ -1,5 +1,51 @@
 <cfcomponent extends="mxunit.framework.TestCase">
 
+	<cffunction name="testCompareArrays">
+		<cfscript>
+			var tests = [
+				{
+					name: "Empty Arrays Match",
+					args: {
+						array1: [],
+						array2: []
+					},
+					expect: {
+						message: "",
+						success: true,
+						lengthsmatch: true,
+						array1mismatchvalues: "",
+						array2mismatchvalues: ""
+					}
+				},
+				{
+					name: "Keys of different types",
+					args: {
+						array1: ["a", {"b": "b"}],
+						array2: ["a", "b"]
+					},
+					expect: {
+						message: "Not sure how to compare these datatypes at row 2. File a bug with a patch. ",
+						success: false,
+						lengthsmatch: true,
+						array1mismatchvalues: "row 2: CANNOT COMPARE TO ARRAY 2",
+						array2mismatchvalues: "row 2: CANNOT COMPARE TO ARRAY 1"
+					}
+				}
+			];
+			var dc = new mxunit.framework.DataCompare();
+			for (var test in tests) {
+				try {
+					var actual = dc.compareArrays(argumentCollection = test.args);
+					// debug(actual);
+					AssertEquals(test.expect, actual, test.name);
+				} catch (any e) {
+					debug(e);
+					fail("#test.name#: unexpected exception. run w/ debug for details.");
+				}
+			}
+		</cfscript>
+	</cffunction>
+
 	<cffunction name="testCompareStructs">
 		<cfscript>
 			var tests = [
@@ -86,8 +132,8 @@
 						UniqueToStruct1: "",
 						UniqueToStruct2: "",
 						mismatches: {},
-						Struct1MismatchValues: 'Structure path [ "B" ]: CANNOT COMPARE',
-						Struct2MismatchValues: 'Structure path [ "B" ]: CANNOT COMPARE'
+						Struct1MismatchValues: 'Structure path [ "B" ]: CANNOT COMPARE TO STRUCT 2',
+						Struct2MismatchValues: 'Structure path [ "B" ]: CANNOT COMPARE TO STRUCT 1'
 					}
 				}
 			];
