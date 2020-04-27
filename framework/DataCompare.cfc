@@ -154,6 +154,8 @@
 					} else {
 						mismatches.message = "Not sure how to compare these datatypes at path #thisPath#. File a bug with a patch. ";
 						mismatches.success = false;
+						mismatches.Struct1MismatchValues = listAppend( mismatches.Struct1MismatchValues, "Structure path #thisPath#: CANNOT COMPARE", "#chr(10)#" );
+						mismatches.Struct2MismatchValues = listAppend( mismatches.Struct2MismatchValues, "Structure path #thisPath#: CANNOT COMPARE", "#chr(10)#" );
 					}
 
 					thisPath = arguments.path;
