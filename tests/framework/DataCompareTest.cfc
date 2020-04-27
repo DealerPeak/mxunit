@@ -18,6 +18,34 @@
 					}
 				},
 				{
+					name: "Array of components",
+					args: {
+						array1: [new mxunit.tests.samples.DataContainer().setA("a").setB(42).setC(true)],
+						array2: [new mxunit.tests.samples.DataContainer().setA("b").setB(42).setC(true)]
+					},
+					expect: {
+						message: "",
+						success: false,
+						lengthsmatch: true,
+						array1mismatchvalues: 'Row 1, Object Compare Result: Structure path [ "a" ]: a',
+						array2mismatchvalues: 'Row 1, Object Compare Result: Structure path [ "a" ]: b',
+						'row 1': {
+							message: "",
+							success: false,
+							UniqueToStruct1: "",
+							UniqueToStruct2: "",
+							mismatches: {
+								'[ "a" ]': {
+									Struct1Value: "a",
+									Struct2Value: "b"
+								}
+							},
+							Struct1MismatchValues: 'Structure path [ "a" ]: a',
+							Struct2MismatchValues: 'Structure path [ "a" ]: b'
+						}
+					}
+				},
+				{
 					name: "Keys of different types",
 					args: {
 						array1: ["a", {"b": "b"}],
@@ -63,6 +91,37 @@
 						mismatches: {},
 						Struct1MismatchValues: "",
 						Struct2MismatchValues: ""
+					}
+				},
+				{
+					name: "Component values in keys",
+					args: {
+						struct1: {"cfc": new mxunit.tests.samples.DataContainer().setA("a").setB(42).setC(true)},
+						struct2: {"cfc": new mxunit.tests.samples.DataContainer().setA("b").setB(42).setC(true)}
+					},
+					expect: {
+						message: "",
+						success: false,
+						UniqueToStruct1: "",
+						UniqueToStruct2: "",
+						mismatches: {
+							'[ "cfc" ]': {
+								message: "",
+								success: false,
+								UniqueToStruct1: "",
+								UniqueToStruct2: "",
+								mismatches: {
+									'[ "cfc" ][ "a" ]': {
+										Struct1Value: "a",
+										Struct2Value: "b"
+									}
+								},
+								Struct1MismatchValues: 'Structure path [ "cfc" ][ "a" ]: a',
+								Struct2MismatchValues: 'Structure path [ "cfc" ][ "a" ]: b'
+							}
+						},
+						Struct1MismatchValues: 'Structure path [ "cfc" ][ "a" ]: a',
+						Struct2MismatchValues: 'Structure path [ "cfc" ][ "a" ]: b'
 					}
 				},
 				{
@@ -141,7 +200,9 @@
 			for (var test in tests) {
 				try {
 					var actual = dc.compareStructs(argumentCollection = test.args);
-					// debug(actual);
+					// if ( test.name == "Component values in keys" ) {
+					// 	debug(actual);
+					// }
 					AssertEquals(test.expect, actual, test.name);
 				} catch (any e) {
 					debug(e);

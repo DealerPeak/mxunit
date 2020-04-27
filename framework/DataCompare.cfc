@@ -135,6 +135,14 @@
 							mismatches.Struct1MismatchValues = listAppend( mismatches.Struct1MismatchValues, "Structure path #thisPath#, Query Compare Result: #queryCompareResult.Query1MismatchValues#", "#chr(10)#" );
 							mismatches.Struct2MismatchValues = listAppend( mismatches.Struct2MismatchValues, "Structure path #thisPath#, Query Compare Result: #queryCompareResult.Query2MismatchValues#", "#chr(10)#" );
 						}
+					} else if( isObject( struct1Value ) AND isObject( struct2Value ) ){
+						structCompareResult = compareStructs( DeserializeJson(SerializeJson(struct1Value)), DeserializeJson(SerializeJson(struct2Value)), thisPath );
+						if( NOT structCompareResult.success ){
+							mismatches.success = false;
+							mismatches.mismatches[thisPath] = structCompareResult;
+							mismatches.Struct1MismatchValues = listAppend( mismatches.Struct1MismatchValues, "#structCompareResult.Struct1MismatchValues#", "#chr(10)#" );
+							mismatches.Struct2MismatchValues = listAppend( mismatches.Struct2MismatchValues, "#structCompareResult.Struct2MismatchValues#", "#chr(10)#" );
+						}
 					} else if( isStruct( struct1Value ) AND isStruct( struct2Value ) ){
 						structCompareResult = compareStructs( struct1Value, struct2Value, thisPath );
 						if( NOT structCompareResult.success ){
@@ -207,6 +215,14 @@
 						mismatches["row #row#"] = queryCompareResult;
 						mismatches.Array1MismatchValues = listAppend( mismatches.Array1MismatchValues, "Row #row#, Query Compare Result: #queryCompareResult.Query1MismatchValues#", "#chr(10)#" );
 						mismatches.Array2MismatchValues = listAppend( mismatches.Array2MismatchValues, "Row #row#, Query Compare Result: #queryCompareResult.Query2MismatchValues#", "#chr(10)#" );
+					}
+				} else if ( isObject( array1Value ) AND isObject( array2Value ) ){
+					structCompareResult = compareStructs( DeserializeJson(SerializeJson(array1Value)), DeserializeJson(SerializeJson(array2Value)) );
+					if( NOT structCompareResult.success ){
+						mismatches.success = false;
+						mismatches["row #row#"] = structCompareResult;
+						mismatches.Array1MismatchValues = listAppend( mismatches.Array1MismatchValues, "Row #row#, Object Compare Result: #structCompareResult.Struct1MismatchValues#", "#chr(10)#" );
+						mismatches.Array2MismatchValues = listAppend( mismatches.Array2MismatchValues, "Row #row#, Object Compare Result: #structCompareResult.Struct2MismatchValues#", "#chr(10)#" );
 					}
 				} else if ( isStruct( array1Value ) AND isStruct( array2Value ) ){
 					structCompareResult = compareStructs( array1Value, array2Value );
