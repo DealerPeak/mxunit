@@ -240,6 +240,11 @@ assert function and thus mxunit won't run on BD unless we do this --->
 	  <cfset actualStringValue = getStringValue(arguments.actual) />
     <cfscript>
 
+		if( isObject( expected ) AND isObject( actual ) ){
+			assertStructEquals( DeserializeJson(SerializeJson(expected)), DeserializeJson(SerializeJson(actual)), message );
+			return;
+		}
+
 		if( isStruct( expected ) AND isStruct( actual ) ){
 			assertStructEquals( expected, actual, message );
 			return;
