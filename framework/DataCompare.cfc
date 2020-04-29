@@ -109,10 +109,16 @@
 				if( structKeyExists( struct2, key )){
 
 					thisPath = thisPath & "[ ""#key#"" ]";
-					struct1Value = struct1[key];
+					struct1Value = StructKeyExists(struct1, key) ? struct1[key] : JavaCast("null", "");
 					struct2Value = struct2[key];
-
-					if( isSimpleValue( struct1Value ) AND isSimpleValue( struct2Value ) ){
+					if ( IsNull(struct1Value) ) {
+						mismatches.success = false;
+						mismatches.mismatches[thisPath] = structNew();
+						mismatches.mismatches[thisPath].Struct1Value = "UNDEFINED";
+						mismatches.mismatches[thisPath].Struct2Value = struct2Value;
+						mismatches.Struct1MismatchValues = listAppend( mismatches.Struct1MismatchValues, "Structure path #thisPath#: UNDEFINED", "#chr(10)#" );
+						mismatches.Struct2MismatchValues = listAppend( mismatches.Struct2MismatchValues, "Structure path #thisPath#: #struct2Value#", "#chr(10)#" );
+					} else if( isSimpleValue( struct1Value ) AND isSimpleValue( struct2Value ) ){
 						if( struct1Value neq struct2Value ){
 							mismatches.success = false;
 							mismatches.mismatches[thisPath] = structNew();
@@ -128,6 +134,14 @@
 							mismatches.mismatches[thisPath] = queryCompareResult;
 							mismatches.Struct1MismatchValues = listAppend( mismatches.Struct1MismatchValues, "Structure path #thisPath#, Query Compare Result: #queryCompareResult.Query1MismatchValues#", "#chr(10)#" );
 							mismatches.Struct2MismatchValues = listAppend( mismatches.Struct2MismatchValues, "Structure path #thisPath#, Query Compare Result: #queryCompareResult.Query2MismatchValues#", "#chr(10)#" );
+						}
+					} else if( isObject( struct1Value ) AND isObject( struct2Value ) ){
+						structCompareResult = compareStructs( DeserializeJson(SerializeJson(struct1Value)), DeserializeJson(SerializeJson(struct2Value)), thisPath );
+						if( NOT structCompareResult.success ){
+							mismatches.success = false;
+							mismatches.mismatches[thisPath] = structCompareResult;
+							mismatches.Struct1MismatchValues = listAppend( mismatches.Struct1MismatchValues, "#structCompareResult.Struct1MismatchValues#", "#chr(10)#" );
+							mismatches.Struct2MismatchValues = listAppend( mismatches.Struct2MismatchValues, "#structCompareResult.Struct2MismatchValues#", "#chr(10)#" );
 						}
 					} else if( isStruct( struct1Value ) AND isStruct( struct2Value ) ){
 						structCompareResult = compareStructs( struct1Value, struct2Value, thisPath );
@@ -148,6 +162,8 @@
 					} else {
 						mismatches.message = "Not sure how to compare these datatypes at path #thisPath#. File a bug with a patch. ";
 						mismatches.success = false;
+						mismatches.Struct1MismatchValues = listAppend( mismatches.Struct1MismatchValues, "Structure path #thisPath#: CANNOT COMPARE TO STRUCT 2", "#chr(10)#" );
+						mismatches.Struct2MismatchValues = listAppend( mismatches.Struct2MismatchValues, "Structure path #thisPath#: CANNOT COMPARE TO STRUCT 1", "#chr(10)#" );
 					}
 
 					thisPath = arguments.path;
@@ -200,6 +216,14 @@
 						mismatches.Array1MismatchValues = listAppend( mismatches.Array1MismatchValues, "Row #row#, Query Compare Result: #queryCompareResult.Query1MismatchValues#", "#chr(10)#" );
 						mismatches.Array2MismatchValues = listAppend( mismatches.Array2MismatchValues, "Row #row#, Query Compare Result: #queryCompareResult.Query2MismatchValues#", "#chr(10)#" );
 					}
+				} else if ( isObject( array1Value ) AND isObject( array2Value ) ){
+					structCompareResult = compareStructs( DeserializeJson(SerializeJson(array1Value)), DeserializeJson(SerializeJson(array2Value)) );
+					if( NOT structCompareResult.success ){
+						mismatches.success = false;
+						mismatches["row #row#"] = structCompareResult;
+						mismatches.Array1MismatchValues = listAppend( mismatches.Array1MismatchValues, "Row #row#, Object Compare Result: #structCompareResult.Struct1MismatchValues#", "#chr(10)#" );
+						mismatches.Array2MismatchValues = listAppend( mismatches.Array2MismatchValues, "Row #row#, Object Compare Result: #structCompareResult.Struct2MismatchValues#", "#chr(10)#" );
+					}
 				} else if ( isStruct( array1Value ) AND isStruct( array2Value ) ){
 					structCompareResult = compareStructs( array1Value, array2Value );
 					if( NOT structCompareResult.success ){
@@ -219,6 +243,8 @@
 				} else {
 					mismatches.message = "Not sure how to compare these datatypes at row #row#. File a bug with a patch. ";
 					mismatches.success = false;
+					mismatches.Array1MismatchValues = listAppend( mismatches.Array1MismatchValues, "row #row#: CANNOT COMPARE TO ARRAY 2", "#chr(10)#" );
+					mismatches.Array2MismatchValues = listAppend( mismatches.Array2MismatchValues, "row #row#: CANNOT COMPARE TO ARRAY 1", "#chr(10)#" );
 				}
 
 			}
