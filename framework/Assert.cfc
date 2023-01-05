@@ -62,7 +62,7 @@ assert function and thus mxunit won't run on BD unless we do this --->
 
 <!--- Utility for dynamically adding assertion behaviors at runtime --->
 <!--- Given a component, adds all existing methods to the current VARIABLES and THIS scope --->
- <cffunction name="addAssertDecorator" access="public" returntype="void" static="true" hint="Method used to dynamically add additional custom assertions at runtime. ">
+ <cffunction name="addAssertDecorator" access="public" returntype="void" hint="Method used to dynamically add additional custom assertions at runtime. ">
    <cfargument name="decoratorName" type="string" hint="The fully qualied name of the assertion component to add; e.g., org.mycompany.MyAssertionComponent" />
    <cfargument name="overrideBehaviors" type="string" required="false" default="false" hint="Tells the framework whether or not to override any existing behaviors. For example, if your org.mycompany.MyAssertionComponent component has an assertTrue() and overridBehaviors is set to TRUE, the mxunit framework will use the new assertTrue() method and not it's own." />
    <cfset var decorator = "" />
@@ -104,7 +104,7 @@ assert function and thus mxunit won't run on BD unless we do this --->
 
 
 
-  <cffunction name="addAssertDecorators" access="public" returntype="void" static="true" hint="Loads any assertions defined in mxunt-config.xml at runtime.">
+  <cffunction name="addAssertDecorators" access="public" returntype="void" hint="Loads any assertions defined in mxunt-config.xml at runtime.">
    <cfset var elements          = createObject("java","java.lang.Object") />
    <cfset var assertPackageName = createObject("java","java.lang.String") />
    <cfset var overrideDefaultBehaviors = createObject("java","java.lang.String") />
@@ -144,7 +144,7 @@ assert function and thus mxunit won't run on BD unless we do this --->
     <cfreturn variables.TestStyle>
   </cffunction>
 
-  <cffunction name="fail" access="public" returntype="void" static="true" hint="Fails a test with the given MESSAGE.">
+  <cffunction name="fail" access="public" returntype="void" hint="Fails a test with the given MESSAGE.">
    <cfargument name="message" required="true" type="string" hint="Custom message to print in the failure."  />
    <cfset var mess = "">
 	 <cfif arguments.message is ''>
@@ -155,7 +155,7 @@ assert function and thus mxunit won't run on BD unless we do this --->
    <cfthrow type="mxunit.exception.AssertionFailedError" message="#mess#" />
   </cffunction>
 
-	<cffunction name="failEquals" access="private" returntype="void" static="true" hint="Fails the test and prints the expected and actual values to the failure message">
+	<cffunction name="failEquals" access="private" returntype="void" hint="Fails the test and prints the expected and actual values to the failure message">
      <cfargument name="expected" type="any" required="yes" hint="The expected string value"  />
 	   <cfargument name="actual"   type="any" required="yes" hint="The actual string value" />
 	   <cfargument name="message" required="false" default="This test failed" hint="Custom message to print in the failure." />
@@ -163,7 +163,7 @@ assert function and thus mxunit won't run on BD unless we do this --->
 	    <cfthrow type="mxunit.exception.AssertionFailedError" message="#arguments.message#:: Expected [#getStringValue(arguments.expected)#] BUT RECEIVED [#getStringValue(arguments.actual)#]. These values should not be the same. " />
    </cffunction>
 
-  <cffunction name="failNotEquals" access="private" returntype="void" static="true" hint="Fails the test and prints the expected and actual values to the failure message">
+  <cffunction name="failNotEquals" access="private" returntype="void" hint="Fails the test and prints the expected and actual values to the failure message">
     <cfargument name="expected" type="any" required="yes" hint="The expected string value"  />
     <cfargument name="actual"   type="any" required="yes" hint="The actual string value" />
     <cfargument name="message" required="false" default="This test failed" hint="Custom message to print in the failure." />

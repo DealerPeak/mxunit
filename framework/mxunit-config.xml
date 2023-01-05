@@ -38,9 +38,7 @@
   The override parameter tells the framework to override any duplicate assertions
   with the ones in the custom assertion.
    --> 
-  <config-element type="assertionExtension" path="MXUnitAssertionExtensions" autoload="true" override="false" /> 
-  <config-element type="assertionExtension" path="HamcrestAssert" autoload="true" override="false" />
-  <config-element type="assertionExtension" path="XPathAssert" autoload="true" override="false" />
+  <config-element type="assertionExtension" path="MXUnitAssertionExtensions" autoload="true" override="false" />
   
   <!--
   <config-element type="assertionExtension" path="org.cfcunit.framework.Assert" autoload="true" override="false" /> 
