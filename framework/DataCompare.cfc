@@ -88,6 +88,7 @@
 			var arrayCompareResult = "";
 			var thisPath = arguments.path;
 			var mismatches = structNew();
+			var struct2KeyList = structKeyList(struct2);
 
 			mismatches.message = "";
 			mismatches.success = true;
@@ -106,18 +107,27 @@
 
 			//only compare keys that exist in both structs; the check above will flag the compare as a failure if the key lists do not match
 			for( key in struct1 ){
-				if( structKeyExists( struct2, key )){
+				if( ListFindNoCase(struct2KeyList, key) > 0 ){
 
 					thisPath = thisPath & "[ ""#key#"" ]";
 					struct1Value = StructKeyExists(struct1, key) ? struct1[key] : JavaCast("null", "");
-					struct2Value = struct2[key];
-					if ( IsNull(struct1Value) ) {
+					struct2Value = StructKeyExists(struct2, key) ? struct2[key] : JavaCast("null", "");
+					if ( IsNull(struct1Value) && IsNull(struct2Value) ) {
+						// both null, matches
+					} else if ( IsNull(struct1Value) && !IsNull(struct2Value) ) {
 						mismatches.success = false;
 						mismatches.mismatches[thisPath] = structNew();
 						mismatches.mismatches[thisPath].Struct1Value = "UNDEFINED";
 						mismatches.mismatches[thisPath].Struct2Value = struct2Value;
 						mismatches.Struct1MismatchValues = listAppend( mismatches.Struct1MismatchValues, "Structure path #thisPath#: UNDEFINED", "#chr(10)#" );
 						mismatches.Struct2MismatchValues = listAppend( mismatches.Struct2MismatchValues, "Structure path #thisPath#: #struct2Value#", "#chr(10)#" );
+					} else if ( !IsNull(struct1Value) && IsNull(struct2Value) ) {
+						mismatches.success = false;
+						mismatches.mismatches[thisPath] = structNew();
+						mismatches.mismatches[thisPath].Struct1Value = struct1Value;
+						mismatches.mismatches[thisPath].Struct2Value = "UNDEFINED";
+						mismatches.Struct1MismatchValues = listAppend( mismatches.Struct1MismatchValues, "Structure path #thisPath#: #struct1Value#", "#chr(10)#" );
+						mismatches.Struct2MismatchValues = listAppend( mismatches.Struct2MismatchValues, "Structure path #thisPath#: UNDEFINED", "#chr(10)#" );
 					} else if( isSimpleValue( struct1Value ) AND isSimpleValue( struct2Value ) ){
 						if( struct1Value neq struct2Value ){
 							mismatches.success = false;

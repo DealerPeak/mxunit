@@ -174,6 +174,33 @@
 					}
 				},
 				{
+					name: "Null Values (1 value, 2 null)",
+					args: {
+						struct1: {
+							a: "a",
+							b: "b"
+						},
+						struct2: {
+							a: "a",
+							b: JavaCast("null", "")
+						}
+					},
+					expect: {
+						message: "",
+						success: false,
+						UniqueToStruct1: "",
+						UniqueToStruct2: "",
+						mismatches: {
+							'[ "B" ]': {
+								Struct1Value: "b",
+								Struct2Value: "UNDEFINED"
+							}
+						},
+						Struct1MismatchValues: 'Structure path [ "B" ]: b',
+						Struct2MismatchValues: 'Structure path [ "B" ]: UNDEFINED'
+					}
+				},
+				{
 					name: "Keys of different types",
 					args: {
 						struct1: {
