@@ -201,6 +201,33 @@
 					}
 				},
 				{
+					name: "Null Values (1 struct, 2 null)",
+					args: {
+						struct1: {
+							a: "a",
+							b: {"hi": "I am a struct"}
+						},
+						struct2: {
+							a: "a",
+							b: JavaCast("null", "")
+						}
+					},
+					expect: {
+						message: "",
+						success: false,
+						UniqueToStruct1: "",
+						UniqueToStruct2: "",
+						mismatches: {
+							'[ "B" ]': {
+								Struct1Value: {"hi": "I am a struct"},
+								Struct2Value: "UNDEFINED"
+							}
+						},
+						Struct1MismatchValues: 'Structure path [ "B" ]: coldfusion.runtime.Struct',
+						Struct2MismatchValues: 'Structure path [ "B" ]: UNDEFINED'
+					}
+				},
+				{
 					name: "Keys of different types",
 					args: {
 						struct1: {
@@ -227,7 +254,7 @@
 			for (var test in tests) {
 				try {
 					var actual = dc.compareStructs(argumentCollection = test.args);
-					// if ( test.name == "Component values in keys" ) {
+					// if ( test.name == "Null Values (1 struct, 2 null)" ) {
 					// 	debug(actual);
 					// }
 					AssertEquals(test.expect, actual, test.name);

@@ -120,13 +120,13 @@
 						mismatches.mismatches[thisPath].Struct1Value = "UNDEFINED";
 						mismatches.mismatches[thisPath].Struct2Value = struct2Value;
 						mismatches.Struct1MismatchValues = listAppend( mismatches.Struct1MismatchValues, "Structure path #thisPath#: UNDEFINED", "#chr(10)#" );
-						mismatches.Struct2MismatchValues = listAppend( mismatches.Struct2MismatchValues, "Structure path #thisPath#: #struct2Value#", "#chr(10)#" );
+						mismatches.Struct2MismatchValues = listAppend( mismatches.Struct2MismatchValues, "Structure path #thisPath#: #IsSimpleValue(struct2Value) ? struct2Value : GetMetadata(struct2Value).getName()#", "#chr(10)#" );
 					} else if ( !IsNull(struct1Value) && IsNull(struct2Value) ) {
 						mismatches.success = false;
 						mismatches.mismatches[thisPath] = structNew();
 						mismatches.mismatches[thisPath].Struct1Value = struct1Value;
 						mismatches.mismatches[thisPath].Struct2Value = "UNDEFINED";
-						mismatches.Struct1MismatchValues = listAppend( mismatches.Struct1MismatchValues, "Structure path #thisPath#: #struct1Value#", "#chr(10)#" );
+						mismatches.Struct1MismatchValues = listAppend( mismatches.Struct1MismatchValues, "Structure path #thisPath#: #IsSimpleValue(struct1Value) ? struct1Value : GetMetadata(struct1Value).getName()#", "#chr(10)#" );
 						mismatches.Struct2MismatchValues = listAppend( mismatches.Struct2MismatchValues, "Structure path #thisPath#: UNDEFINED", "#chr(10)#" );
 					} else if( isSimpleValue( struct1Value ) AND isSimpleValue( struct2Value ) ){
 						if( struct1Value neq struct2Value ){
