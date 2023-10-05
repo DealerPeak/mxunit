@@ -144,7 +144,7 @@
 						mismatches.Struct1MismatchValues = listAppend( mismatches.Struct1MismatchValues, "Structure path #thisPath#: #IsSimpleValue(struct1Value) ? struct1Value : getTypeName(struct1Value)#", "#chr(10)#" );
 						mismatches.Struct2MismatchValues = listAppend( mismatches.Struct2MismatchValues, "Structure path #thisPath#: UNDEFINED", "#chr(10)#" );
 					} else if( isSimpleValue( struct1Value ) AND isSimpleValue( struct2Value ) ){
-						if( struct1Value neq struct2Value ){
+						if( Compare(struct1Value, struct2Value) NEQ 0 ){
 							mismatches.success = false;
 							mismatches.mismatches[thisPath] = structNew();
 							mismatches.mismatches[thisPath].Struct1Value = struct1Value;
