@@ -105,6 +105,21 @@
 				mismatches.Struct2MismatchValues = listAppend( mismatches.Struct2MismatchValues, "Keys unique to Struct 2: #mismatches.UniqueToStruct2#", "#chr(10)#");
 			}
 
+			var getTypeName = function(any value) {
+				var md = GetMetadata(value);
+				try {
+					if ( IsQuery(value) ) {
+						return "coldfusion.Query";
+					} else if ( StructKeyExists(md, "fullname") ) {
+						return md.fullname; // components
+					} else {
+						return md.getName(); // struct, array, etc
+					}
+				} catch (exType exName) {
+					return "UNKNOWN";
+				}
+			};
+
 			//only compare keys that exist in both structs; the check above will flag the compare as a failure if the key lists do not match
 			for( key in struct1 ){
 				if( ListFindNoCase(struct2KeyList, key) > 0 ){
@@ -120,13 +135,13 @@
 						mismatches.mismatches[thisPath].Struct1Value = "UNDEFINED";
 						mismatches.mismatches[thisPath].Struct2Value = struct2Value;
 						mismatches.Struct1MismatchValues = listAppend( mismatches.Struct1MismatchValues, "Structure path #thisPath#: UNDEFINED", "#chr(10)#" );
-						mismatches.Struct2MismatchValues = listAppend( mismatches.Struct2MismatchValues, "Structure path #thisPath#: #IsSimpleValue(struct2Value) ? struct2Value : GetMetadata(struct2Value).getName()#", "#chr(10)#" );
+						mismatches.Struct2MismatchValues = listAppend( mismatches.Struct2MismatchValues, "Structure path #thisPath#: #IsSimpleValue(struct2Value) ? struct2Value : getTypeName(struct2Value)#", "#chr(10)#" );
 					} else if ( !IsNull(struct1Value) && IsNull(struct2Value) ) {
 						mismatches.success = false;
 						mismatches.mismatches[thisPath] = structNew();
 						mismatches.mismatches[thisPath].Struct1Value = struct1Value;
 						mismatches.mismatches[thisPath].Struct2Value = "UNDEFINED";
-						mismatches.Struct1MismatchValues = listAppend( mismatches.Struct1MismatchValues, "Structure path #thisPath#: #IsSimpleValue(struct1Value) ? struct1Value : GetMetadata(struct1Value).getName()#", "#chr(10)#" );
+						mismatches.Struct1MismatchValues = listAppend( mismatches.Struct1MismatchValues, "Structure path #thisPath#: #IsSimpleValue(struct1Value) ? struct1Value : getTypeName(struct1Value)#", "#chr(10)#" );
 						mismatches.Struct2MismatchValues = listAppend( mismatches.Struct2MismatchValues, "Structure path #thisPath#: UNDEFINED", "#chr(10)#" );
 					} else if( isSimpleValue( struct1Value ) AND isSimpleValue( struct2Value ) ){
 						if( struct1Value neq struct2Value ){
